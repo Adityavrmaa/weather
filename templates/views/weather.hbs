@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{>links}}
+    <title>weather</title>
+  </head>
+  <body>
+     {{>navbar}}
+  <!--- carousel form start here -->
+  <div class="container-fluid">
+
+    <div class="col-md-4 col-12 mx-auto align-items-center ">
+
+ <div class="row">
+      <form class="d-flex p-4">
+          <input class="form-control me-2" id="searchCityName" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit"   id="submitBtn">Search</button>
+        </form>
+        <div class="tempinfo">
+          <div class="top_layer text-white px-4">
+            <h2 id="monthsData"></h2>
+            <h4 id="todayData"> 16 dec </h4>
+        </div>
+         <div class="main_layer">
+           <p id="city_name"></p>
+           <div class="middle_layer data_hide">
+             <h3 id="temprature"><span></span><sup></sup></h3>
+             <h3 id="temptemprature_status"></h3>
+
+           </div>
+</div>
+</div>
+</div>
+
+
+
+<script>
+// date script for id =  monthsData
+var d = new Date();
+var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+document.getElementById("monthsData").innerHTML = days[d.getDay()];
+
+
+
+// date script for id =  dateData
+var today = new Date();
+var time =document.getElementById("todayData").innerHTML= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+
+// add id into html tags
+const searchCityName =document.getElementById('searchCityName');
+const searchSubmitBtn = document.getElementById('submitBtn');
+const city_name =  document.getElementById('city_name');
+const temprature = document.getElementById('temprature');
+const temptemprature_status = document.getElementById('temptemprature_status');
+const data_hide = document.getElementsByClassName('.data_hide');
+const btnFunCall=async(e)=>{
+  e.preventDefault();
+  // fetch a input data form city_name
+  const cityValue = searchCityName.value;
+
+
+// conditions
+if(cityValue===""){
+ city_name.innerText ='plzz input here';
+
+}else{
+  try {
+    let url = `http://api.openweathermap.org/data/2.5/weather?q=${cityValue}&units=metric&appid=e7150e32bb8c338628090acfa2fb035d`;
+    const resApi = await fetch(url);
+    const apiData =await resApi.json();
+    const arrayapidata = [apiData];
+     city_name.innerText = `${arrayapidata[0].name}, ${arrayapidata[0].sys.country}`;
+    temprature.innerText = arrayapidata[0].main.temp;
+    temptemprature_status.innerText = arrayapidata[0].weather[0].main;
+  // any condion of image show put next list-inline
+
+  } catch {
+    city_name.innerText ='worng Input';
+
+  }
+}
+}
+
+searchSubmitBtn.addEventListener('click',btnFunCall);
+
+
+
+</script>
+  </body>
+</html>
